@@ -97,7 +97,7 @@ class _MoedasPageState extends State<MoedasPage> {
                 backgroundColor: selected
                     ? Theme.of(context).colorScheme.primary
                     : Colors.transparent,
-                child: selectedItens.contains(table[coin])
+                child: selected
                     ? const Icon(Icons.check)
                     : ClipRRect(child: Image.asset(table[coin].icone)),
               ),
