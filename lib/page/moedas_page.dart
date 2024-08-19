@@ -1,6 +1,8 @@
 import 'package:cryptoquote/model/moeda.dart';
+import 'package:cryptoquote/page/moedas_detalhe_page.dart';
 import 'package:cryptoquote/repository/moeda_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 
 class MoedasPage extends StatefulWidget {
@@ -10,15 +12,28 @@ class MoedasPage extends StatefulWidget {
   State<MoedasPage> createState() => _MoedasPageState();
 }
 
-class _MoedasPageState extends State<MoedasPage> {
+class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
   late List<Moeda> table;
   late NumberFormat currencyFormatter;
   late List<Moeda> selectedItens;
   late bool selectionMode;
+  late bool showFloatingActionButton;
 
-  appbar() {
+  late final _animationController = AnimationController(
+    duration: const Duration(milliseconds: 400),
+    vsync: this,
+  )..forward();
+
+  late final _animation = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.fastOutSlowIn,
+  );
+
+  sliverAppBar() {
     if (selectedItens.isEmpty) {
-      return AppBar(
+      return SliverAppBar(
+        snap: true,
+        floating: true,
         centerTitle: true,
         title: const Text('Cripto Moedas'),
         backgroundColor: Theme.of(context).primaryColor,
@@ -28,7 +43,9 @@ class _MoedasPageState extends State<MoedasPage> {
             .copyWith(color: Theme.of(context).colorScheme.onPrimary),
       );
     } else {
-      return AppBar(
+      return SliverAppBar(
+          snap: true,
+          floating: true,
           centerTitle: true,
           leading: BackButton(
             onPressed: () {
@@ -46,21 +63,31 @@ class _MoedasPageState extends State<MoedasPage> {
 
   floatingActionButton() {
     if (selectedItens.isNotEmpty) {
-      return FloatingActionButton.extended(
-        onPressed: () {},
-        icon: const Icon(Icons.star),
-        label: Text(
-          'FAVORITAR',
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
-                letterSpacing: 0,
-                fontWeight: FontWeight.bold,
-              ),
+      return ScaleTransition(
+        scale: _animation,
+        child: FloatingActionButton.extended(
+          onPressed: () {},
+          icon: const Icon(Icons.star),
+          label: Text(
+            'FAVORITAR',
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+          ),
         ),
       );
     } else {
       return null;
     }
+  }
+
+  showDetails(Moeda moeda) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MoedasDetalhePage(moeda: moeda),
+      ),
+    );
   }
 
   @override
@@ -69,7 +96,15 @@ class _MoedasPageState extends State<MoedasPage> {
     currencyFormatter = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
     selectedItens = List.empty(growable: true);
     selectionMode = false;
+    showFloatingActionButton = true;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animation.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,67 +120,92 @@ class _MoedasPageState extends State<MoedasPage> {
         }
       },
       child: Scaffold(
-        appBar: appbar(),
-        body: ListView.separated(
-          itemBuilder: (BuildContext context, int coin) {
-            final selected = selectedItens.contains(table[coin]);
+        body: NestedScrollView(
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            sliverAppBar(),
+          ],
+          body: NotificationListener<UserScrollNotification>(
+            onNotification: (scroll) {
+              if (scroll.direction == ScrollDirection.reverse &&
+                  selectionMode &&
+                  showFloatingActionButton) {
+                _animationController.reverse();
+                showFloatingActionButton = false;
+              } else if (scroll.direction == ScrollDirection.forward &&
+                  selectionMode &&
+                  !showFloatingActionButton) {
+                _animationController.forward();
+                showFloatingActionButton = true;
+              }
+              return true;
+            },
+            child: ListView.separated(
+              itemBuilder: (BuildContext context, int coin) {
+                final selected = selectedItens.contains(table[coin]);
 
-            return ListTile(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12))),
-              leading: CircleAvatar(
-                backgroundColor: selected
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.transparent,
-                child: selected
-                    ? const Icon(Icons.check)
-                    : ClipRRect(child: Image.asset(table[coin].icone)),
-              ),
-              title: Text(
-                table[coin].nome,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: selected
+                return ListTile(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  leading: CircleAvatar(
+                    backgroundColor: selected
                         ? Theme.of(context).colorScheme.primary
-                        : null),
-              ),
-              trailing: Text(
-                currencyFormatter.format(table[coin].preco),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: selected
-                        ? Theme.of(context).colorScheme.primary
-                        : null),
-              ),
-              selected: selected,
-              selectedTileColor:
-                  Theme.of(context).colorScheme.primary.withAlpha(50),
-              onTap: () {
-                if (selectionMode) {
-                  setState(() {
-                    selected
-                        ? selectedItens.remove(table[coin])
-                        : selectedItens.add(table[coin]);
+                        : Colors.transparent,
+                    child: selected
+                        ? const Icon(Icons.check)
+                        : ClipRRect(child: Image.asset(table[coin].icone)),
+                  ),
+                  title: Text(
+                    table[coin].nome,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: selected
+                            ? Theme.of(context).colorScheme.primary
+                            : null),
+                  ),
+                  trailing: Text(
+                    currencyFormatter.format(table[coin].preco),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: selected
+                            ? Theme.of(context).colorScheme.primary
+                            : null),
+                  ),
+                  selected: selected,
+                  selectedTileColor:
+                      Theme.of(context).colorScheme.primary.withAlpha(50),
+                  onTap: () {
+                    if (selectionMode) {
+                      setState(() {
+                        selected
+                            ? selectedItens.remove(table[coin])
+                            : selectedItens.add(table[coin]);
 
-                    if (selectedItens.isEmpty) {
-                      selectionMode = false;
+                        if (selectedItens.isEmpty) {
+                          selectionMode = false;
+                        }
+                      });
+                    } else {
+                      showDetails(table[coin]);
                     }
-                  });
-                }
+                  },
+                  onLongPress: () {
+                    setState(() {
+                      if (!selectionMode) {
+                        selectionMode = true;
+                        _animationController.forward();
+                        showFloatingActionButton = true;
+                      }
+                      selectedItens.add(table[coin]);
+                    });
+                  },
+                );
               },
-              onLongPress: () {
-                setState(() {
-                  if (!selectionMode) {
-                    selectionMode = true;
-                  }
-                  selectedItens.add(table[coin]);
-                });
-              },
-            );
-          },
-          padding: const EdgeInsets.all(16),
-          separatorBuilder: (_, __) => Divider(
-            color: Colors.grey[200],
+              padding: const EdgeInsets.all(16),
+              separatorBuilder: (_, __) => Divider(
+                color: Colors.grey[200],
+              ),
+              itemCount: table.length,
+            ),
           ),
-          itemCount: table.length,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: floatingActionButton(),
