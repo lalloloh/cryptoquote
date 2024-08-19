@@ -19,10 +19,7 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
   late bool selectionMode;
   late bool showFloatingActionButton;
 
-  late final _animationController = AnimationController(
-    duration: const Duration(milliseconds: 400),
-    vsync: this,
-  )..forward();
+  late final AnimationController _animationController;
 
   late final _animation = CurvedAnimation(
     parent: _animationController,
@@ -97,6 +94,10 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
     selectedItens = List.empty(growable: true);
     selectionMode = false;
     showFloatingActionButton = true;
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    )..forward();
     super.initState();
   }
 

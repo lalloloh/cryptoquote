@@ -1,4 +1,5 @@
 import 'package:cryptoquote/model/moeda.dart';
+import 'package:cryptoquote/widgets/expanded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -139,39 +140,14 @@ class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
                 ),
               ),
             ),
-            Container(
-              alignment: Alignment.bottomCenter,
-              margin: const EdgeInsets.only(top: 24),
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  onPressed: buy,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.check,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          'Comprar',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontSize: 20,
-                              ),
-                        ),
-                      ),
-                    ],
-                  )),
-            )
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: ExpandedButton(
+                icon: Icons.check,
+                label: 'Comprar',
+                onPressed: buy,
+              ),
+            ),
           ],
         ),
       ),
