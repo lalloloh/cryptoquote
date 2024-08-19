@@ -1,4 +1,4 @@
-import 'package:cryptoquote/page/moedas_page.dart';
+import 'package:cryptoquote/page/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -39,7 +39,7 @@ class CryptoQuote extends StatelessWidget {
           accentColor: Colors.indigoAccent,
         ),
       ),
-      home: const MoedasPage(),
+      home: const HomePage(),
     );
   }
 }
