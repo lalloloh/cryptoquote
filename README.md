@@ -4,11 +4,11 @@ O CryptoQuote é um aplicativo de cotação de criptomoedas desenvolvido em Flut
 
 ## Recursos
 
-- **Cotações em Tempo Real**: Veja as últimas cotações das criptomoedas.
-- **Gráficos de Preços**: Acompanhe a evolução dos preços ao longo do tempo.
-- **Notificações de Variações**: Receba alertas quando houver mudanças significativas nas cotações.
-- **Busca de Moedas**: Encontre informações sobre moedas específicas.
-- **Configurações Personalizadas**: Ajuste o aplicativo de acordo com suas preferências.
+- [ ] **Cotações em Tempo Real**: Veja as últimas cotações das criptomoedas.
+- [ ] **Gráficos de Preços**: Acompanhe a evolução dos preços ao longo do tempo.
+- [ ] **Notificações de Variações**: Receba alertas quando houver mudanças significativas nas cotações.
+- [ ] **Busca de Moedas**: Encontre informações sobre moedas específicas.
+- [ ] **Configurações Personalizadas**: Ajuste o aplicativo de acordo com suas preferências.
 
 ## Contribuições
 
