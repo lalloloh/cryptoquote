@@ -36,13 +36,20 @@ class _HomePageState extends State<HomePage> {
           FavoritasPage(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: page,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Todas'),
-          BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favoritas'),
+      bottomNavigationBar: NavigationBar(
+        destinations: const [
+          NavigationDestination(
+              icon: Icon(Icons.list_outlined),
+              selectedIcon: Icon(Icons.list),
+              label: 'Todas'),
+          NavigationDestination(
+            icon: Icon(Icons.star_outlined),
+            selectedIcon: Icon(Icons.star),
+            label: 'Favoritas',
+          ),
         ],
-        onTap: (index) {
+        selectedIndex: page,
+        onDestinationSelected: (index) {
           pageController.animateToPage(index,
               duration: const Duration(milliseconds: 400), curve: Curves.ease);
         },

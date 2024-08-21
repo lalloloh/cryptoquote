@@ -1,9 +1,11 @@
 import 'package:cryptoquote/model/moeda.dart';
 import 'package:cryptoquote/page/moedas_detalhe_page.dart';
+import 'package:cryptoquote/repository/favoritas_repository.dart';
 import 'package:cryptoquote/repository/moeda_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MoedasPage extends StatefulWidget {
   const MoedasPage({super.key});
@@ -18,6 +20,7 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
   late List<Moeda> selectedItens;
   late bool selectionMode;
   late bool showFloatingActionButton;
+  late FavoritasRepository favoritasRepository;
 
   late final AnimationController _animationController;
 
@@ -63,7 +66,10 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
       return ScaleTransition(
         scale: _animation,
         child: FloatingActionButton.extended(
-          onPressed: () {},
+          onPressed: () {
+            favoritasRepository.saveAll(selectedItens);
+            clearSelectedItens();
+          },
           icon: const Icon(Icons.star),
           label: Text(
             'FAVORITAR',
@@ -76,6 +82,12 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
     } else {
       return null;
     }
+  }
+
+  void clearSelectedItens() {
+    setState(() {
+      selectedItens.clear();
+    });
   }
 
   showDetails(Moeda moeda) {
@@ -110,6 +122,8 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    favoritasRepository = Provider.of<FavoritasRepository>(context);
+
     return PopScope(
       canPop: !selectionMode,
       onPopInvokedWithResult: (didPop, result) {
@@ -121,6 +135,8 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
+        backgroundColor:
+            Theme.of(context).colorScheme.primary.withOpacity(0.05),
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -156,12 +172,32 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
                         ? const Icon(Icons.check)
                         : ClipRRect(child: Image.asset(table[coin].icone)),
                   ),
-                  title: Text(
-                    table[coin].nome,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: selected
-                            ? Theme.of(context).colorScheme.primary
-                            : null),
+                  title: Row(
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: Text(
+                          table[coin].nome,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color: selected
+                                      ? Theme.of(context).colorScheme.primary
+                                      : null),
+                        ),
+                      ),
+                      const Spacer(),
+                      if (favoritasRepository.lista.contains(table[coin]))
+                        const Flexible(
+                          flex: 2,
+                          child: Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 16,
+                          ),
+                        ),
+                    ],
                   ),
                   trailing: Text(
                     currencyFormatter.format(table[coin].preco),
