@@ -1,6 +1,7 @@
-import 'package:cryptoquote/model/moeda.dart';
-import 'package:cryptoquote/page/moedas_detalhe_page.dart';
-import 'package:cryptoquote/repository/favoritas_repository.dart';
+import 'package:cryptoquote/configs/app_settings.dart';
+import 'package:cryptoquote/models/moeda.dart';
+import 'package:cryptoquote/pages/moedas_detalhe_page.dart';
+import 'package:cryptoquote/repositories/favoritas_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,8 @@ class MoedaCard extends StatefulWidget {
 }
 
 class _MoedaCardState extends State<MoedaCard> {
-  final currencyFormatter = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  late NumberFormat currencyFormatter;
+  late Map<String, String> localeMap;
 
   showDetails() {
     Navigator.push(
@@ -25,8 +27,16 @@ class _MoedaCardState extends State<MoedaCard> {
     );
   }
 
+  void readNumberFormat() {
+    localeMap = Provider.of<AppSettings>(context).localeMap;
+    currencyFormatter = NumberFormat.currency(
+        locale: localeMap['locale'], name: localeMap['name']);
+  }
+
   @override
   Widget build(BuildContext context) {
+    readNumberFormat();
+
     return Card(
       margin: const EdgeInsets.only(top: 12),
       elevation: 2,

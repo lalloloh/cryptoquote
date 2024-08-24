@@ -1,5 +1,5 @@
-import 'package:cryptoquote/page/favoritas_page.dart';
-import 'package:cryptoquote/page/moedas_page.dart';
+import 'package:cryptoquote/pages/favoritas_page.dart';
+import 'package:cryptoquote/pages/moedas_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

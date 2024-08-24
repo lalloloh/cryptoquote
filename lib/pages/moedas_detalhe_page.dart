@@ -1,8 +1,10 @@
-import 'package:cryptoquote/model/moeda.dart';
+import 'package:cryptoquote/configs/app_settings.dart';
+import 'package:cryptoquote/models/moeda.dart';
 import 'package:cryptoquote/widgets/expanded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MoedasDetalhePage extends StatefulWidget {
   final Moeda moeda;
@@ -14,20 +16,27 @@ class MoedasDetalhePage extends StatefulWidget {
 }
 
 class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
-  final currencyFormatter = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  late NumberFormat currencyFormatter;
+  late Map<String, String> localeMap;
   final _formKey = GlobalKey<FormState>();
   final _valorController = TextEditingController();
   late double quantidade;
 
   buy() {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      // Salvar a compra
+      // Realizar Compra
 
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Compra realizada com sucesso!')));
     }
+  }
+
+  void readNumberFormat() {
+    localeMap = Provider.of<AppSettings>(context).localeMap;
+    currencyFormatter = NumberFormat.currency(
+        locale: localeMap['locale'], name: localeMap['name']);
   }
 
   @override
@@ -38,6 +47,8 @@ class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
 
   @override
   Widget build(BuildContext context) {
+    readNumberFormat();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

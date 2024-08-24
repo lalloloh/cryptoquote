@@ -1,12 +1,21 @@
-import 'package:cryptoquote/page/home_page.dart';
-import 'package:cryptoquote/repository/favoritas_repository.dart';
+import 'package:cryptoquote/configs/app_settings.dart';
+import 'package:cryptoquote/configs/hive_config.dart';
+import 'package:cryptoquote/pages/home_page.dart';
+import 'package:cryptoquote/repositories/favoritas_repository.dart';
+import 'package:cryptoquote/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveConfig.start();
+
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => FavoritasRepository(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => FavoritasRepository()),
+        ChangeNotifierProvider(create: (context) => AppSettings())
+      ],
       child: const CryptoQuote(),
     ),
   );
@@ -20,32 +29,7 @@ class CryptoQuote extends StatelessWidget {
     return MaterialApp(
       title: 'MoedasBase',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.from(
-        useMaterial3: true,
-        textTheme: TextTheme(
-          labelLarge: const TextStyle(
-            color: Colors.indigo,
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            letterSpacing: 0,
-          ),
-          headlineMedium: TextStyle(
-            color: Colors.grey[800],
-            fontWeight: FontWeight.w600,
-            fontSize: 28,
-          ),
-          titleSmall: const TextStyle(
-            color: Colors.indigo,
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.indigo,
-          backgroundColor: Colors.indigo,
-          accentColor: Colors.indigoAccent,
-        ),
-      ),
+      theme: AppTheme.lightTheme,
       home: const HomePage(),
     );
   }

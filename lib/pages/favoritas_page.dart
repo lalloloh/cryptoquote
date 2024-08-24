@@ -1,4 +1,4 @@
-import 'package:cryptoquote/repository/favoritas_repository.dart';
+import 'package:cryptoquote/repositories/favoritas_repository.dart';
 import 'package:cryptoquote/widgets/moeda_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

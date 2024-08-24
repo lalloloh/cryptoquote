@@ -1,4 +1,4 @@
-import 'package:cryptoquote/model/moeda.dart';
+import 'package:cryptoquote/models/moeda.dart';
 
 class MoedaRepository {
   static List<Moeda> tabela = [
