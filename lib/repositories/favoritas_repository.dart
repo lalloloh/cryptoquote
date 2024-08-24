@@ -25,9 +25,13 @@ class FavoritasRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  void remove(Moeda moeda) {
-    box.delete(moeda.sigla);
-    _lista.remove(moeda);
+  void removeAll(List<Moeda> moedas) {
+    for (var moeda in moedas) {
+      if (_lista.any((m) => m.sigla == moeda.sigla)) {
+        box.delete(moeda.sigla);
+        _lista.remove(moeda);
+      }
+    }
     notifyListeners();
   }
 

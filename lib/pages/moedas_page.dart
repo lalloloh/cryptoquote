@@ -31,7 +31,7 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
     curve: Curves.fastOutSlowIn,
   );
 
-  floatingActionButton() {
+  ScaleTransition? floatingActionButton() {
     if (selectedItens.isNotEmpty) {
       return ScaleTransition(
         scale: _animation,
