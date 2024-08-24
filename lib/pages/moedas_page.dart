@@ -3,6 +3,7 @@ import 'package:cryptoquote/models/moeda.dart';
 import 'package:cryptoquote/pages/moedas_detalhe_page.dart';
 import 'package:cryptoquote/repositories/favoritas_repository.dart';
 import 'package:cryptoquote/repositories/moeda_repository.dart';
+import 'package:cryptoquote/widgets/sliver_appbar_selection_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
@@ -30,63 +31,6 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
     curve: Curves.fastOutSlowIn,
   );
 
-  sliverAppBar() {
-    if (selectedItens.isEmpty) {
-      return SliverAppBar(
-        snap: true,
-        floating: true,
-        centerTitle: true,
-        title: const Text('Cripto Moedas'),
-        backgroundColor: Theme.of(context).primaryColor,
-        titleTextStyle: Theme.of(context)
-            .textTheme
-            .headlineSmall!
-            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-        actions: [
-          switchAppLanguageButton(),
-        ],
-        iconTheme: Theme.of(context)
-            .iconTheme
-            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-      );
-    } else {
-      return SliverAppBar(
-        snap: true,
-        floating: true,
-        centerTitle: true,
-        leading: BackButton(
-          onPressed: () {
-            setState(() {
-              selectionMode = false;
-              selectedItens.clear();
-            });
-          },
-        ),
-        title: Text('${selectedItens.length} selecionadas'),
-        backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
-        titleTextStyle: Theme.of(context).textTheme.headlineSmall,
-        actions: [
-          Checkbox(
-            value: table.every((moeda) =>
-                selectedItens.any((selectedItem) => moeda == selectedItem)),
-            onChanged: (value) {
-              if (value != null && value) {
-                setState(() {
-                  selectedItens.clear();
-                  selectedItens.addAll(table);
-                });
-              } else if (value != null && !value) {
-                setState(() {
-                  selectedItens.clear();
-                });
-              }
-            },
-          )
-        ],
-      );
-    }
-  }
-
   floatingActionButton() {
     if (selectedItens.isNotEmpty) {
       return ScaleTransition(
@@ -113,6 +57,7 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
 
   void clearSelectedItens() {
     setState(() {
+      selectionMode = false;
       selectedItens.clear();
     });
   }
@@ -183,10 +128,7 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
       canPop: !selectionMode,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
-          setState(() {
-            selectionMode = false;
-            selectedItens.clear();
-          });
+          clearSelectedItens();
         }
       },
       child: Scaffold(
@@ -195,7 +137,38 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            sliverAppBar(),
+            SliverAppbarSelectionMode(
+              onSelectionMode: selectionMode,
+              title: const Text('Cripto Moedas'),
+              titleOnSelectionMode:
+                  Text('${selectedItens.length} selecionadas'),
+              leadingOnSelectionMode: BackButton(
+                onPressed: () {
+                  clearSelectedItens();
+                },
+              ),
+              actions: [
+                switchAppLanguageButton(),
+              ],
+              actionsOnSelectionMode: [
+                Checkbox(
+                  value: table.every((moeda) => selectedItens
+                      .any((selectedItem) => moeda == selectedItem)),
+                  onChanged: (value) {
+                    if (value != null && value) {
+                      setState(() {
+                        selectedItens.clear();
+                        selectedItens.addAll(table);
+                      });
+                    } else if (value != null && !value) {
+                      setState(() {
+                        selectedItens.clear();
+                      });
+                    }
+                  },
+                )
+              ],
+            ),
           ],
           body: NotificationListener<UserScrollNotification>(
             onNotification: (scroll) {
