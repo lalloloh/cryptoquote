@@ -124,74 +124,101 @@ class _FavoritasPageState extends State<FavoritasPage>
               },
             )
           ],
-          body: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            child: Consumer<FavoritasRepository>(
-              builder: (context, favoritasRepository, child) {
-                return favoritasRepository.lista.isEmpty
-                    ? const ListTile(
+          body: Consumer<FavoritasRepository>(
+            builder: (context, favoritasRepository, child) {
+              return favoritasRepository.lista.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.fromLTRB(12, 0, 12, 12),
+                      child: ListTile(
                         leading: Icon(Icons.star),
                         title: Text('Ainda não há moedas favoritas!'),
-                      )
-                    : NotificationListener<UserScrollNotification>(
-                        onNotification: (scroll) {
-                          if (scroll.direction == ScrollDirection.reverse &&
-                              selectionMode &&
-                              showFloatingActionButton) {
-                            _animationController.reverse();
-                            showFloatingActionButton = false;
-                          } else if (scroll.direction ==
-                                  ScrollDirection.forward &&
-                              selectionMode &&
-                              !showFloatingActionButton) {
-                            _animationController.forward();
-                            showFloatingActionButton = true;
-                          }
-                          return true;
-                        },
-                        child: ListView.builder(
-                          itemCount: favoritasRepository.lista.length,
-                          itemBuilder: (context, index) {
-                            bool selected = selectedItens
-                                .contains(favoritasRepository.lista[index]);
+                      ),
+                    )
+                  : NotificationListener<UserScrollNotification>(
+                      onNotification: (scroll) {
+                        if (scroll.direction == ScrollDirection.reverse &&
+                            selectionMode &&
+                            showFloatingActionButton) {
+                          _animationController.reverse();
+                          showFloatingActionButton = false;
+                        } else if (scroll.direction ==
+                                ScrollDirection.forward &&
+                            selectionMode &&
+                            !showFloatingActionButton) {
+                          _animationController.forward();
+                          showFloatingActionButton = true;
+                        }
+                        return true;
+                      },
+                      child: ListView.builder(
+                        itemCount: favoritasRepository.lista.length,
+                        itemBuilder: (context, index) {
+                          bool selected = selectedItens
+                              .contains(favoritasRepository.lista[index]);
 
-                            return MoedaCard(
-                              moeda: favoritasRepository.lista[index],
-                              selected: selected,
-                              onTap: () {
-                                if (!selectionMode) {
-                                  showDetails(favoritasRepository.lista[index]);
-                                } else {
+                          return Dismissible(
+                            key: Key(favoritasRepository.lista[index].sigla),
+                            direction: selectionMode
+                                ? DismissDirection.none
+                                : DismissDirection.endToStart,
+                            onDismissed: (direction) => favoritasRepository
+                                .removeAll([favoritasRepository.lista[index]]),
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              color: Colors.red,
+                              child: const Padding(
+                                padding: EdgeInsets.only(right: 12),
+                                child: Icon(
+                                  Icons.remove_circle_outline,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: MoedaCard(
+                                moeda: favoritasRepository.lista[index],
+                                selected: selected,
+                                onTap: () {
+                                  if (!selectionMode) {
+                                    showDetails(
+                                        favoritasRepository.lista[index]);
+                                  } else {
+                                    setState(() {
+                                      selected
+                                          ? selectedItens.remove(
+                                              favoritasRepository.lista[index])
+                                          : selectedItens.add(
+                                              favoritasRepository.lista[index]);
+
+                                      if (selectedItens.isEmpty) {
+                                        selectionMode = false;
+                                      }
+                                    });
+                                  }
+                                },
+                                onLongPress: () {
                                   setState(() {
-                                    selected
-                                        ? selectedItens.remove(
-                                            favoritasRepository.lista[index])
-                                        : selectedItens.add(
-                                            favoritasRepository.lista[index]);
-
-                                    if (selectedItens.isEmpty) {
-                                      selectionMode = false;
+                                    if (!selectionMode) {
+                                      selectionMode = true;
+                                      _animationController.forward();
+                                      showFloatingActionButton = true;
+                                    }
+                                    if (!selectedItens.contains(
+                                        favoritasRepository.lista[index])) {
+                                      selectedItens.add(
+                                          favoritasRepository.lista[index]);
                                     }
                                   });
-                                }
-                              },
-                              onLongPress: () {
-                                setState(() {
-                                  if (!selectionMode) {
-                                    selectionMode = true;
-                                    _animationController.forward();
-                                    showFloatingActionButton = true;
-                                  }
-                                  selectedItens
-                                      .add(favoritasRepository.lista[index]);
-                                });
-                              },
-                            );
-                          },
-                        ),
-                      );
-              },
-            ),
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+            },
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

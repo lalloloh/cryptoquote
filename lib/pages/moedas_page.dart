@@ -267,7 +267,9 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
                             _animationController.forward();
                             showFloatingActionButton = true;
                           }
-                          selectedItens.add(table[coin]);
+                          if (!selectedItens.contains(table[coin])) {
+                            selectedItens.add(table[coin]);
+                          }
                         });
                       },
                     );
