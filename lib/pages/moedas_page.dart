@@ -9,14 +9,14 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class MoedasPage extends StatefulWidget {
-  const MoedasPage({super.key});
+class MoedaPage extends StatefulWidget {
+  const MoedaPage({super.key});
 
   @override
-  State<MoedasPage> createState() => _MoedasPageState();
+  State<MoedaPage> createState() => _MoedaPageState();
 }
 
-class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
+class _MoedaPageState extends State<MoedaPage> with TickerProviderStateMixin {
   late List<Moeda> table;
   late Map<String, String> localeMap;
   late NumberFormat currencyFormatter;
@@ -33,6 +33,7 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
 
   ScaleTransition? floatingActionButton() {
     if (selectedItens.isNotEmpty) {
+      _animationController.forward();
       return ScaleTransition(
         scale: _animation,
         child: FloatingActionButton.extended(
@@ -109,7 +110,7 @@ class _MoedasPageState extends State<MoedasPage> with TickerProviderStateMixin {
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
-    )..forward();
+    );
     super.initState();
   }
 

@@ -5,14 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class ConfiguracoesPage extends StatefulWidget {
-  const ConfiguracoesPage({super.key});
+class ConfiguracaoPage extends StatefulWidget {
+  const ConfiguracaoPage({super.key});
 
   @override
-  State<ConfiguracoesPage> createState() => ConfiguracoesPageState();
+  State<ConfiguracaoPage> createState() => ConfiguracaoPageState();
 }
 
-class ConfiguracoesPageState extends State<ConfiguracoesPage> {
+class ConfiguracaoPageState extends State<ConfiguracaoPage> {
   void updateSaldo(ContaRepository contaRepository) async {
     final formKey = GlobalKey<FormState>();
     final valorController = TextEditingController();

@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-class FavoritasPage extends StatefulWidget {
-  const FavoritasPage({super.key});
+class FavoritaPage extends StatefulWidget {
+  const FavoritaPage({super.key});
 
   @override
-  State<FavoritasPage> createState() => _FavoritasPageState();
+  State<FavoritaPage> createState() => _FavoritaPageState();
 }
 
-class _FavoritasPageState extends State<FavoritasPage>
+class _FavoritaPageState extends State<FavoritaPage>
     with TickerProviderStateMixin {
   bool selectionMode = false;
   bool showFloatingActionButton = false;
@@ -27,6 +27,7 @@ class _FavoritasPageState extends State<FavoritasPage>
 
   ScaleTransition? floatingActionButton() {
     if (selectedItens.isNotEmpty) {
+      _animationController.forward();
       return ScaleTransition(
         scale: _animation,
         child: FloatingActionButton.extended(
@@ -70,7 +71,7 @@ class _FavoritasPageState extends State<FavoritasPage>
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
-    )..forward();
+    );
     super.initState();
   }
 
