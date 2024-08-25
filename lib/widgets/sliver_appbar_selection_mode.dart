@@ -30,14 +30,7 @@ class SliverAppbarSelectionMode extends StatelessWidget {
         leading: leading,
         title: title,
         backgroundColor: Theme.of(context).primaryColor,
-        titleTextStyle: Theme.of(context)
-            .textTheme
-            .headlineSmall!
-            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
         actions: actions,
-        iconTheme: Theme.of(context)
-            .iconTheme
-            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
       );
     } else {
       return SliverAppBar(
@@ -48,6 +41,7 @@ class SliverAppbarSelectionMode extends StatelessWidget {
         title: titleOnSelectionMode,
         backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
         titleTextStyle: Theme.of(context).textTheme.headlineSmall,
+        iconTheme: Theme.of(context).iconTheme,
         actions: actionsOnSelectionMode,
       );
     }

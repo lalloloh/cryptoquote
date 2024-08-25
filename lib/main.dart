@@ -1,6 +1,7 @@
 import 'package:cryptoquote/configs/app_settings.dart';
 import 'package:cryptoquote/configs/hive_config.dart';
 import 'package:cryptoquote/pages/home_page.dart';
+import 'package:cryptoquote/repositories/conta_repository.dart';
 import 'package:cryptoquote/repositories/favoritas_repository.dart';
 import 'package:cryptoquote/themes/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => FavoritasRepository()),
-        ChangeNotifierProvider(create: (context) => AppSettings())
+        ChangeNotifierProvider(create: (context) => AppSettings()),
+        ChangeNotifierProvider(create: (context) => ContaRepository()),
       ],
       child: const CryptoQuote(),
     ),

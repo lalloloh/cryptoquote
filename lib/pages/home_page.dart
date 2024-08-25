@@ -1,3 +1,4 @@
+import 'package:cryptoquote/pages/configuracoes_page.dart';
 import 'package:cryptoquote/pages/favoritas_page.dart';
 import 'package:cryptoquote/pages/moedas_page.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _HomePageState extends State<HomePage> {
         children: const [
           MoedasPage(),
           FavoritasPage(),
+          ConfiguracoesPage(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -47,6 +49,11 @@ class _HomePageState extends State<HomePage> {
             selectedIcon: Icon(Icons.star),
             label: 'Favoritas',
           ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Configurações',
+          )
         ],
         selectedIndex: page,
         onDestinationSelected: (index) {

@@ -117,7 +117,9 @@ class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
                 controller: _valorController,
                 style: Theme.of(context).textTheme.titleLarge,
                 keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
+                ],
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Informe o valor da compra';

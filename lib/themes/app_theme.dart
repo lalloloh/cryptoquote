@@ -21,6 +21,12 @@ class AppTheme {
             fontWeight: FontWeight.normal,
           ),
         ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.indigo,
+          iconTheme: IconThemeData(color: Colors.white),
+          titleTextStyle: TextStyle(
+              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.indigo,
           backgroundColor: Colors.indigo,
