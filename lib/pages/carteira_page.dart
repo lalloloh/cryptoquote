@@ -18,7 +18,7 @@ class _CarteiraPageState extends State<CarteiraPage> {
   double totalCarteira = 0;
   late NumberFormat currencyFormatter;
   late ContaRepository contaRepository;
-  List<Posicao> carteira = [];
+  List<CarteiraItem> carteira = [];
   String graficoLabel = '';
   double graficoValor = 0;
 

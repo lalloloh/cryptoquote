@@ -1,8 +1,8 @@
 import 'package:cryptoquote/models/moeda.dart';
 
-class Posicao {
+class CarteiraItem {
   Moeda moeda;
   double quantidade;
 
-  Posicao({required this.moeda, required this.quantidade});
+  CarteiraItem({required this.moeda, required this.quantidade});
 }

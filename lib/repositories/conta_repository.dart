@@ -1,14 +1,21 @@
 import 'package:cryptoquote/database/db.dart';
+import 'package:cryptoquote/database/resources/carteira_helper.dart';
+import 'package:cryptoquote/database/resources/conta_helper.dart';
+import 'package:cryptoquote/database/resources/historico_helper.dart';
+import 'package:cryptoquote/models/enums/enum_tipo_operacao.dart';
+import 'package:cryptoquote/models/historico.dart';
+import 'package:cryptoquote/models/moeda.dart';
 import 'package:cryptoquote/models/posicao.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ContaRepository extends ChangeNotifier {
   late Database db;
-  final List<Posicao> carteira = [];
+  List<CarteiraItem> _carteira = [];
   double _saldo = 0;
 
   double get saldo => _saldo;
+  List<CarteiraItem> get carteira => _carteira;
 
   ContaRepository() {
     _startRepository();
@@ -16,20 +23,48 @@ class ContaRepository extends ChangeNotifier {
 
   Future<void> _startRepository() async {
     await _getSaldo();
+    await _getCarteira();
   }
 
   Future<void> _getSaldo() async {
     db = await DB.instance.dataBase;
-
-    List<Map<String, dynamic>> conta = await db.query('conta', limit: 1);
-    _saldo = conta.first['saldo'];
+    final obtainedSaldo = await ContaHelper.getSaldoById(db, 1);
+    if (obtainedSaldo != null) _saldo = obtainedSaldo;
     notifyListeners();
   }
 
   Future<void> setSaldo(double valor) async {
     db = await DB.instance.dataBase;
-    db.update('conta', {'saldo': valor});
+    await ContaHelper.save(db, saldo: valor, id: 1);
     _saldo = valor;
+    notifyListeners();
+  }
+
+  Future<void> comprar(Moeda moeda, double valor) async {
+    db = await DB.instance.dataBase;
+    await db.transaction(
+      (txn) async {
+        await CarteiraHelper.save(
+            txn, CarteiraItem(moeda: moeda, quantidade: (valor / moeda.preco)));
+
+        await HistoricoHelper.save(
+          txn,
+          Historico.withMoeda(
+            tipoOperacao: EnumTipoOperacao.compra,
+            moeda: moeda,
+            valor: valor,
+            quantidade: (valor / moeda.preco),
+          ),
+        );
+
+        await ContaHelper.save(txn, saldo: saldo - valor, id: 1);
+      },
+    );
+    await _startRepository();
+  }
+
+  Future<void> _getCarteira() async {
+    _carteira = await CarteiraHelper.getAll(db);
     notifyListeners();
   }
 }

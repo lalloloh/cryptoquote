@@ -1,5 +1,6 @@
 import 'package:cryptoquote/configs/app_settings.dart';
 import 'package:cryptoquote/models/moeda.dart';
+import 'package:cryptoquote/repositories/conta_repository.dart';
 import 'package:cryptoquote/widgets/expanded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,26 +18,35 @@ class MoedasDetalhePage extends StatefulWidget {
 
 class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
   late NumberFormat currencyFormatter;
+  late ContaRepository contaRepository;
   late Map<String, String> localeMap;
   final _formKey = GlobalKey<FormState>();
   final _valorController = TextEditingController();
   late double quantidade;
 
-  buy() {
+  buy() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      // Realizar Compra
+      await contaRepository
+          .comprar(widget.moeda, double.parse(_valorController.text))
+          .then(
+        (_) {
+          if (mounted) {
+            Navigator.pop(context);
 
-      Navigator.pop(context);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Compra realizada com sucesso!')));
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Compra realizada com sucesso!')));
+          }
+        },
+      );
     }
   }
 
-  void readNumberFormat() {
+  void loadProviders() {
     localeMap = Provider.of<AppSettings>(context).localeMap;
     currencyFormatter = NumberFormat.currency(
         locale: localeMap['locale'], name: localeMap['name']);
+
+    contaRepository = Provider.of<ContaRepository>(context, listen: false);
   }
 
   @override
@@ -47,7 +57,7 @@ class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
 
   @override
   Widget build(BuildContext context) {
-    readNumberFormat();
+    loadProviders();
 
     return Scaffold(
       appBar: AppBar(
@@ -125,6 +135,8 @@ class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
                     return 'Informe o valor da compra';
                   } else if (double.parse(value) < 50) {
                     return 'O valor mínimo para compra é R\$50,00';
+                  } else if (double.parse(value) > contaRepository.saldo) {
+                    return 'Você não tem saldo suficiente';
                   }
                   return null;
                 },
