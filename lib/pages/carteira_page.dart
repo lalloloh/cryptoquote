@@ -135,6 +135,26 @@ class _CarteiraPageState extends State<CarteiraPage> {
     });
   }
 
+  Widget loadHistorico() {
+    final historico = contaRepository.historico
+      ..sort((a, b) => b.dataOperacao.compareTo(a.dataOperacao));
+    final dateFormatter = DateFormat('dd/MM/yyyy - hh:mm');
+    List<Widget> widgets = [];
+
+    for (var operacao in historico) {
+      widgets.add(ListTile(
+        title: Text(operacao.moeda.nome),
+        subtitle: Text(dateFormatter.format(operacao.dataOperacao)),
+        trailing: Text(currencyFormatter
+            .format((operacao.moeda.preco * operacao.quantidade))),
+      ));
+      widgets.add(const Divider());
+    }
+    return Column(
+      children: widgets,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var localeMap = Provider.of<AppSettings>(context).localeMap;
@@ -165,6 +185,7 @@ class _CarteiraPageState extends State<CarteiraPage> {
                   .copyWith(fontWeight: FontWeight.w700, letterSpacing: -1.5),
             ),
             loadGrafico(),
+            loadHistorico(),
           ],
         ),
       ),

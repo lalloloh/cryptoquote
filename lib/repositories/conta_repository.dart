@@ -12,10 +12,12 @@ import 'package:sqflite/sqflite.dart';
 class ContaRepository extends ChangeNotifier {
   late Database db;
   List<CarteiraItem> _carteira = [];
+  List<Historico> _historico = [];
   double _saldo = 0;
 
   double get saldo => _saldo;
   List<CarteiraItem> get carteira => _carteira;
+  List<Historico> get historico => _historico;
 
   ContaRepository() {
     _startRepository();
@@ -24,6 +26,7 @@ class ContaRepository extends ChangeNotifier {
   Future<void> _startRepository() async {
     await _getSaldo();
     await _getCarteira();
+    await _getHistorico();
   }
 
   Future<void> _getSaldo() async {
@@ -49,7 +52,7 @@ class ContaRepository extends ChangeNotifier {
 
         await HistoricoHelper.save(
           txn,
-          Historico.withMoeda(
+          Historico(
             tipoOperacao: EnumTipoOperacao.compra,
             moeda: moeda,
             valor: valor,
@@ -65,6 +68,11 @@ class ContaRepository extends ChangeNotifier {
 
   Future<void> _getCarteira() async {
     _carteira = await CarteiraHelper.getAll(db);
+    notifyListeners();
+  }
+
+  Future<void> _getHistorico() async {
+    _historico = await HistoricoHelper.getAll(db);
     notifyListeners();
   }
 }

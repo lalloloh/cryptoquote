@@ -35,8 +35,8 @@ class HistoricoHelper {
       await db.insert(_tableName, {
         _dataOperacao: historico.dataOperacao.millisecondsSinceEpoch,
         _tipoOperacao: historico.tipoOperacao,
-        _moeda: historico.nomeMoeda,
-        _sigla: historico.siglaMoeda,
+        _moeda: historico.moeda.nome,
+        _sigla: historico.moeda.sigla,
         _valor: historico.valor,
         _quantidade: historico.quantidade.toString(),
       });
@@ -46,13 +46,24 @@ class HistoricoHelper {
           {
             _dataOperacao: historico.dataOperacao.millisecondsSinceEpoch,
             _tipoOperacao: historico.tipoOperacao,
-            _moeda: historico.nomeMoeda,
-            _sigla: historico.siglaMoeda,
+            _moeda: historico.moeda.nome,
+            _sigla: historico.moeda.sigla,
             _valor: historico.valor,
             _quantidade: historico.quantidade.toString(),
           },
           where: '$_id = ?',
           whereArgs: [historico.id]);
     }
+  }
+
+  static Future<List<Historico>> getAll(Database db) async {
+    List<Map<String, dynamic>> queryResult = await db.query(_tableName);
+
+    List<Historico> retorno = List.empty(growable: true);
+    for (var result in queryResult) {
+      retorno.add(Historico.fromLocalDataBaseMap(result));
+    }
+
+    return retorno;
   }
 }

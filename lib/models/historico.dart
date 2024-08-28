@@ -4,8 +4,7 @@ class Historico {
   late int id;
   late DateTime dataOperacao;
   String tipoOperacao;
-  late String nomeMoeda;
-  late String siglaMoeda;
+  Moeda moeda;
   double valor;
   double quantidade;
 
@@ -13,8 +12,7 @@ class Historico {
     id,
     dataOperacao,
     required this.tipoOperacao,
-    required this.nomeMoeda,
-    required this.siglaMoeda,
+    required this.moeda,
     required this.valor,
     required this.quantidade,
   }) {
@@ -22,17 +20,14 @@ class Historico {
     this.dataOperacao = dataOperacao ?? DateTime.now();
   }
 
-  Historico.withMoeda({
-    id,
-    dataOperacao,
-    required this.tipoOperacao,
-    required Moeda moeda,
-    required this.valor,
-    required this.quantidade,
-  }) {
-    this.id = id ?? 0;
-    this.dataOperacao = dataOperacao ?? DateTime.now();
-    nomeMoeda = moeda.nome;
-    siglaMoeda = moeda.sigla;
+  factory Historico.fromLocalDataBaseMap(Map<String, dynamic> map) {
+    return Historico(
+      id: map['id'],
+      dataOperacao: DateTime.fromMillisecondsSinceEpoch(map['data_operacao']),
+      tipoOperacao: map['tipo_operacao'],
+      moeda: Moeda.fromSigla(map['sigla']),
+      valor: map['valor'],
+      quantidade: double.parse(map['quantidade']),
+    );
   }
 }
