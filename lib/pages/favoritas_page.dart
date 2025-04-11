@@ -86,7 +86,7 @@ class _FavoritaPageState extends State<FavoritaPage>
       },
       child: Scaffold(
         backgroundColor:
-            Theme.of(context).colorScheme.primary.withOpacity(0.05),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [

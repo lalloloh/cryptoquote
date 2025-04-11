@@ -164,7 +164,8 @@ class _CarteiraPageState extends State<CarteiraPage> {
     setTotalCarteira();
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+      backgroundColor:
+          Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 48),
         child: Column(

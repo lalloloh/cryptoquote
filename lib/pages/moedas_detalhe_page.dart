@@ -104,7 +104,7 @@ class _MoedasDetalhePageState extends State<MoedasDetalhePage> {
                           margin: const EdgeInsets.only(bottom: 24),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: Colors.teal.withOpacity(0.05)),
+                              color: Colors.teal.withValues(alpha: 0.05)),
                           child: Text(
                             '$quantidade ${widget.moeda.sigla}',
                             textAlign: TextAlign.center,

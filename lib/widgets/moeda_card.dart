@@ -84,13 +84,15 @@ class _MoedaCardState extends State<MoedaCard> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 decoration: BoxDecoration(
-                  color:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.05),
                   border: Border.all(
                       color: Theme.of(context)
                           .colorScheme
                           .primary
-                          .withOpacity(0.4)),
+                          .withValues(alpha: 0.4)),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Text(

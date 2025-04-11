@@ -65,7 +65,8 @@ class ConfiguracaoPageState extends State<ConfiguracaoPage> {
         locale: localeMap['locale'], name: localeMap['name']);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+      backgroundColor:
+          Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
       appBar: AppBar(centerTitle: true, title: const Text('Configurações')),
       body: Padding(
         padding: const EdgeInsets.all(12),
