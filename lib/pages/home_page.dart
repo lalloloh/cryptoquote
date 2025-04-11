@@ -1,5 +1,7 @@
-import 'package:cryptoquote/page/favoritas_page.dart';
-import 'package:cryptoquote/page/moedas_page.dart';
+import 'package:cryptoquote/pages/carteira_page.dart';
+import 'package:cryptoquote/pages/configuracoes_page.dart';
+import 'package:cryptoquote/pages/favoritas_page.dart';
+import 'package:cryptoquote/pages/moedas_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,21 +34,34 @@ class _HomePageState extends State<HomePage> {
         controller: pageController,
         onPageChanged: setPage,
         children: const [
-          MoedasPage(),
-          FavoritasPage(),
+          MoedaPage(),
+          FavoritaPage(),
+          CarteiraPage(),
+          ConfiguracaoPage(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
           NavigationDestination(
-              icon: Icon(Icons.list_outlined),
-              selectedIcon: Icon(Icons.list),
-              label: 'Todas'),
+            icon: Icon(Icons.list_outlined),
+            selectedIcon: Icon(Icons.list),
+            label: 'Todas',
+          ),
           NavigationDestination(
             icon: Icon(Icons.star_outlined),
             selectedIcon: Icon(Icons.star),
             label: 'Favoritas',
           ),
+          NavigationDestination(
+            icon: Icon(Icons.wallet_outlined),
+            selectedIcon: Icon(Icons.wallet),
+            label: 'Carteira',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Configurações',
+          )
         ],
         selectedIndex: page,
         onDestinationSelected: (index) {
