@@ -10,11 +10,11 @@ class AppSettings extends ChangeNotifier {
   }
 
   void _startSettings() async {
-    await _starPreferences();
+    await _startPreferences();
     _readLocale();
   }
 
-  Future<void> _starPreferences() async {
+  Future<void> _startPreferences() async {
     box = await Hive.openBox('preferencias');
   }
 

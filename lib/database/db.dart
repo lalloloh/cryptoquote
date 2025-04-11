@@ -9,7 +9,7 @@ import 'package:path/path.dart';
 class DB {
   DB._();
   static final DB instance = DB._();
-  static Database? _database;
+  Database? _database;
 
   Future<Database> get dataBase async {
     if (_database != null) return _database!;
@@ -17,8 +17,12 @@ class DB {
   }
 
   Future<Database> _initDatabase() async {
-    return await openDatabase(join(await getDatabasesPath(), 'cryptoquote.db'),
-        version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    _database = await openDatabase(
+        join(await getDatabasesPath(), 'cryptoquote.db'),
+        version: 1,
+        onCreate: _onCreate,
+        onUpgrade: _onUpgrade);
+    return _database!;
   }
 
   FutureOr<void> _onCreate(Database db, int version) async {
